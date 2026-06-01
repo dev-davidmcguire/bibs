@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Squad Splitter</title>
+</head>
+<body>
+  <h1>Squad Splitter</h1>
+  <button id="select-all">Select All</button>
+  <button id="deselect-all">Deselect All</button>
+  <div id="player-list"></div>
+  <button id="split-teams">Split Teams</button>
+
+<script>
+  // all my players, each one has a name, position and rating
+  const players = [
+    { name: "Sam Carter",     position: "GK",  rating: 82 },
+    { name: "Luis Fernandez", position: "GK",  rating: 75 },
+    { name: "Jake Thompson",  position: "DEF", rating: 88 },
+    { name: "Marcus Reid",    position: "DEF", rating: 79 },
+    { name: "Tom Brennan",    position: "DEF", rating: 84 },
+    { name: "Chris Okafor",   position: "DEF", rating: 71 },
+    { name: "Nico Bauer",     position: "DEF", rating: 77 },
+    { name: "Rafi Santos",    position: "DEF", rating: 68 },
+    { name: "Daniel Park",    position: "MID", rating: 91 },
+    { name: "Leo Marchetti",  position: "MID", rating: 86 },
+    { name: "Ethan Cole",     position: "MID", rating: 83 },
+    { name: "Ivan Petrov",    position: "MID", rating: 78 },
+    { name: "Omar Diallo",    position: "MID", rating: 74 },
+    { name: "Harry Walsh",    position: "MID", rating: 80 },
+    { name: "Yusuf Celik",    position: "MID", rating: 69 },
+    { name: "Ben Kowalski",   position: "MID", rating: 72 },
+    { name: "Andres Vega",    position: "FWD", rating: 93 },
+    { name: "Callum Shaw",    position: "FWD", rating: 89 },
+    { name: "Mateo Cruz",     position: "FWD", rating: 87 },
+    { name: "Joel Asante",    position: "FWD", rating: 81 },
+    { name: "Finn Larsen",    position: "FWD", rating: 76 },
+    { name: "Pierre Dubois",  position: "FWD", rating: 85 },
+    { name: "Kira Novak",     position: "FWD", rating: 70 },
+    { name: "Diego Rojas",    position: "FWD", rating: 66 },
+    { name: "Tariq Hussain",  position: "FWD", rating: 73 },
+  ];
+
+  // tick all checkboxes when select all is clicked
+  document.getElementById("select-all").addEventListener("click", () => {
+    document.querySelectorAll("#player-list input[type='checkbox']").forEach(cb => cb.checked = true);
+  });
+
+  // untick all checkboxes when deselect all is clicked
+  document.getElementById("deselect-all").addEventListener("click", () => {
+    document.querySelectorAll("#player-list input[type='checkbox']").forEach(cb => cb.checked = false);
+  });
+
+  // grab the div where the player list goes
+  const list = document.getElementById("player-list");
+
+  // loop through each player and add them to the page
+  players.forEach((player, index) => {
+    // using a label so clicking the text also toggles the checkbox
+    const label = document.createElement("label");
+    // build the checkbox + player info, storing the index so i know which player it is later
+    label.innerHTML = `<input type="checkbox" data-index="${index}"> ${player.name} — ${player.position} — ${player.rating}`;
+    list.appendChild(label);
+    list.appendChild(document.createElement("br")); // new line after each player
+  });
+</script>
+</body>
+</html>
