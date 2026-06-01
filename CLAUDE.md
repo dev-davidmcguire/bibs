@@ -1,4 +1,4 @@
-# Squad Splitter — Claude Code Instructions
+# Bibs — Claude Code Instructions
 
 ## Project
 Plain HTML/CSS/JS only. Single file: index.html. No frameworks, no libraries, no build tools.

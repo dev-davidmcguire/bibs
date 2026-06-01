@@ -11,6 +11,7 @@
   <button id="deselect-all">Deselect All</button>
   <div id="player-list"></div>
   <button id="split-teams">Split Teams</button>
+  <div id="teams-output"></div>
 
 <script>
   // all my players, each one has a name, position and rating
@@ -50,6 +51,60 @@
   // untick all checkboxes when deselect all is clicked
   document.getElementById("deselect-all").addEventListener("click", () => {
     document.querySelectorAll("#player-list input[type='checkbox']").forEach(cb => cb.checked = false);
+  });
+
+  // when split teams is clicked, split the selected players into two balanced teams
+  document.getElementById("split-teams").addEventListener("click", () => {
+    // get all the ticked checkboxes and look up the matching player from the array
+    const checked = document.querySelectorAll("#player-list input[type='checkbox']:checked");
+    const selected = Array.from(checked).map(cb => players[parseInt(cb.dataset.index)]);
+
+    if (selected.length < 2) {
+      alert("Select at least 2 players to split!");
+      return;
+    }
+
+    // group players by position so we can balance each position across both teams
+    const byPosition = {};
+    selected.forEach(p => {
+      if (!byPosition[p.position]) byPosition[p.position] = [];
+      byPosition[p.position].push(p);
+    });
+
+    const teamA = [];
+    const teamB = [];
+
+    // for each position group, sort best to worst then snake draft —
+    // 1st goes to A, 2nd to B, 3rd to A, etc. keeps ratings balanced within each position.
+    // aIsFirst flips whenever a group has an odd count, so if A got the extra player in
+    // one group(Def), B gets the extra in the next odd group(Mid) — team sizes stay equal overall
+    let aIsFirst = true;
+    Object.values(byPosition).forEach(group => {
+      group.sort((a, b) => b.rating - a.rating);
+      group.forEach((player, i) => {
+        const goesToA = aIsFirst ? i % 2 === 0 : i % 2 !== 0;
+        if (goesToA) teamA.push(player);
+        else teamB.push(player);
+      });
+      if (group.length % 2 === 1) aIsFirst = !aIsFirst;
+    });
+
+    // work out average rating for a team
+    const avgRating = team => Math.round(team.reduce((sum, p) => sum + p.rating, 0) / team.length);
+
+    // build the HTML for one team column
+    const renderTeam = (team, name) => {
+      const rows = team.map(p => `<div>${p.name} — ${p.position} — ${p.rating}</div>`).join("");
+      return `<div><h3>${name}</h3><div>Avg rating: ${avgRating(team)}</div>${rows}</div>`;
+    };
+
+    // show both columns side by side
+    document.getElementById("teams-output").innerHTML = `
+      <div style="display:flex; gap:2rem;">
+        ${renderTeam(teamA, "Team A")}
+        ${renderTeam(teamB, "Team B")}
+      </div>
+    `;
   });
 
   // grab the div where the player list goes
